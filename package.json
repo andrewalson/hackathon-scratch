@@ -10,6 +10,10 @@
     "test": "jest"
   },
   "dependencies": {
+    "@react-three/drei": "^9.111.0",
+    "@react-three/fiber": "^8.17.5",
+    "@react-three/gltfjsx": "^4.3.4",
+    "@splinetool/react-spline": "^4.0.0",
     "axios": "^1.7.4",
     "cheerio": "^1.0.0",
     "mongodb": "^6.8.0",
