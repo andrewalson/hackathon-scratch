@@ -1,20 +1,22 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
+import { ScrapedData } from '@/types/ScrapedData';
 
-export async function scrapeWebsite(url: string) {
+export async function scrapeWebsite(url: string): Promise<Omit<ScrapedData, 'url' | 'scrapedAt'>> {
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-
-    const title = $('h1').text() || '';
-    const description = $('meta[name="description"]').attr('content') || '';
-    const links = $('a').map((i: number, el: cheerio.Element) => $(el).attr('href')).get();
+    
+    const title = $('title').first().text().trim() || $('h1').first().text().trim();
+    const description = $('meta[name="description"]').attr('content') || $('p').first().text().trim();
+    const links = $('a').map((_, el) => $(el).attr('href')).get();
 
     return { title, description, links };
-
   } catch (error) {
-    console.error('Error scraping website:', error);
-    throw error; // Re-throw the error to be handled by the API route
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      throw new Error('Page not found');
+    }
+    throw new Error('Failed to scrape website');
   }
 }
 
