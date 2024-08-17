@@ -1,12 +1,13 @@
-import { NextResponse } from 'next/server'
-import { scrapeWebsite } from '@/lib/scraper'
+import { NextResponse } from 'next/server';
+import { scrapeWebsite } from '../../../lib/scraper';
 
 export async function POST(request: Request) {
-  const { url } = await request.json()
   try {
-    const data = await scrapeWebsite(url)
-    return NextResponse.json(data)
+    const { url } = await request.json();
+    const data = await scrapeWebsite(url);
+    return NextResponse.json(data);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to scrape website' }, { status: 500 })
+    console.error('API route error:', error);
+    return NextResponse.json({ error: 'An error occurred while scraping the website' }, { status: 500 });
   }
 }
