@@ -29,9 +29,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Failed to scrape website' }, { status: 500 })
       }
 
+      // Remove `url` from scrapedData before spreading it
+      const { url: scrapedUrl, ...restOfScrapedData } = scrapedData
+
       const newData: ScrapedData = {
-        url,
-        ...scrapedData,
+        url, // The URL passed in the request
+        ...restOfScrapedData, // The rest of the scraped data without the URL
         scrapedAt: new Date()
       }
 
