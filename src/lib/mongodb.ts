@@ -1,7 +1,4 @@
-import * as dotenv from "dotenv";
 import { MongoClient, MongoClientOptions } from "mongodb";
-
-dotenv.config({ path: ".env.local" });
 
 if (!process.env.MONGODB_URI) {
   throw new Error(
@@ -14,8 +11,6 @@ const options: MongoClientOptions = {
   maxPoolSize: 10,
   serverSelectionTimeoutMS: 5000,
   socketTimeoutMS: 45000,
-  tls: true,
-  tlsAllowInvalidCertificates: true,
 };
 
 let client: MongoClient;
