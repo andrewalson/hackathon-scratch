@@ -1,19 +1,71 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import { Builder, By, until } from 'selenium-webdriver';
+import { Builder, By, until, WebDriver } from 'selenium-webdriver';
+import * as tf from '@tensorflow/tfjs';
 import { ScrapedData } from '@/types/ScrapedData';
+
+let model: tf.LayersModel | null = null;
+
+// Function to load the trained model
+async function loadModel() {
+  if (!model) {
+    model = await tf.loadLayersModel('localstorage://tech-category-model');
+  }
+}
+
+// Function to tokenize text for the model
+function tokenize(text: string): number[] {
+  return text.split(' ').map((word) => word.length);
+}
+
+// Function to categorize the text using the model
+async function categorizeText(text: string): Promise<string> {
+  if (!model) {
+    await loadModel();
+  }
+
+  const inputTensor = tf.tensor2d([tokenize(text)], [1, text.split(' ').length]);
+  const prediction = model?.predict(inputTensor) as tf.Tensor;
+  const categoryIndex = (await prediction.argMax(-1).data())[0];
+  const categories = ["Search Engine", "Consumer Electronics", "Software", "E-commerce"];
+
+  return categories[categoryIndex];
+}
 
 // Function to determine if the site requires JavaScript rendering
 async function requiresSelenium(url: string): Promise<boolean> {
   try {
     const response = await axios.get(url);
     const $ = cheerio.load(response.data);
-    // Example check: if the page contains specific JS-based content or lacks standard HTML elements
     const isDynamic = $('noscript').length > 0 || $('body').text().trim().length === 0;
     return isDynamic;
   } catch (error) {
     return true; // Fallback to Selenium if Axios fails
   }
+}
+
+// Function to create a driver based on the chosen browser
+async function createDriver(browser: string): Promise<WebDriver> {
+  let driver;
+
+  switch (browser.toLowerCase()) {
+    case 'chrome':
+      driver = new Builder().forBrowser('chrome').build();
+      break;
+    case 'firefox':
+      driver = new Builder().forBrowser('firefox').build();
+      break;
+    case 'edge':
+      driver = new Builder().forBrowser('MicrosoftEdge').build();
+      break;
+    case 'safari':
+      driver = new Builder().forBrowser('safari').build();
+      break;
+    default:
+      throw new Error(`Unsupported browser: ${browser}`);
+  }
+
+  return driver;
 }
 
 // Scrape with Axios and Cheerio (for static websites)
@@ -32,14 +84,15 @@ async function scrapeWithAxios(url: string) {
 }
 
 // Scrape with Selenium (for dynamic websites)
-async function scrapeWithSelenium(url: string) {
-  const driver = await new Builder().forBrowser('chrome').build();
+async function scrapeWithSelenium(url: string, browser: string) {
+  const driver = await createDriver(browser);
 
   try {
     await driver.get(url);
 
     // Wait for the page to load completely
     await driver.wait(until.elementLocated(By.tagName('body')), 10000);
+    await driver.sleep(5000); // Wait for 5 seconds to ensure all dynamic content loads
 
     const title = await driver.getTitle();
     const descriptionElement = await driver.findElement(By.name('description'));
@@ -64,17 +117,34 @@ async function scrapeWithSelenium(url: string) {
 }
 
 // Unified function to scrape websites (decides between Axios/Cheerio and Selenium)
-export async function scrapeWebsite(url: string): Promise<Omit<ScrapedData, 'url' | 'scrapedAt'>> {
+export async function scrapeWebsite(url: string): Promise<ScrapedData> {
   const useSelenium = await requiresSelenium(url);
-  
+  const browser = process.env.BROWSER || 'chrome'; // Choose the browser, default is Chrome
+
+  console.log(`Using ${useSelenium ? 'Selenium' : 'Axios'} for scraping ${url}`);
+
+  let data;
   if (useSelenium) {
-    return scrapeWithSelenium(url);
+    data = await scrapeWithSelenium(url, browser);
   } else {
-    return scrapeWithAxios(url);
+    data = await scrapeWithAxios(url);
   }
+
+  // Categorize the text content of the scraped data
+  const category = await categorizeText(data.description || data.title || '');
+
+  // Return the complete scraped data including the category and URL
+  return {
+    url,
+    title: data.title,
+    description: data.description,
+    links: data.links,
+    scrapedAt: new Date(),
+    category
+  };
 }
 
 // Example usage
-scrapeWebsite('https://www.example.com')
+scrapeWebsite('example.com')
   .then(data => console.log(data))
   .catch(error => console.error('Error scraping:', error));

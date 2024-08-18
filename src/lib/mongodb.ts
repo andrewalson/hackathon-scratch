@@ -8,9 +8,9 @@ if (!process.env.MONGODB_URI) {
 
 const uri = process.env.MONGODB_URI;
 const options: MongoClientOptions = {
-  maxPoolSize: 10,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
+  tls: true,
+  tlsAllowInvalidCertificates: true, // Consider using this if you suspect certificate issues
+  serverSelectionTimeoutMS: 30000,
 };
 
 let client: MongoClient;

@@ -123,14 +123,14 @@ export default function Home() {
       }}>
         {/* Static Scraper */}
         <div style={{ backgroundColor: cardBgColor, padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%', transition: 'background-color 0.3s ease' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Static Web Scraper</h1>
+          <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Web Scraper</h1>
           <div style={{ marginBottom: '20px' }}>
             <input
               type="text"
               value={staticUrl}
               onChange={(e) => setStaticUrl(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleStaticScrape()}
-              placeholder="Enter static URL to scrape"
+              placeholder="Enter URL with (http:// or https://) to scrape"
               style={{
                 width: '100%',
                 padding: '12px 15px',
@@ -163,13 +163,14 @@ export default function Home() {
               onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
               onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
             >
-              {loading ? 'Scraping...' : 'Scrape Static Site'}
+              {loading ? 'Scraping...' : 'Scrape Website'}
             </button>
           </div>
           {error && <p style={{ color: '#ff6b6b', marginTop: '20px', textAlign: 'center' }}>{error}</p>}
           {result && (
             <div style={{ marginTop: '20px' }}>
               <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#61dafb' }}>{result.title}</h2>
+              <p style={{ fontSize: '1.2rem', marginBottom: '10px', color: '#61dafb' }}>Category: {result.category}</p>
               {result.paragraphs && result.paragraphs.length > 0 && (
                 <>
                   <h3 style={{ fontSize: '1.2rem', color: '#61dafb' }}>Paragraphs:</h3>
@@ -192,52 +193,6 @@ export default function Home() {
               )}
             </div>
           )}
-        </div>
-
-        {/* Dynamic Scraper */}
-        <div style={{ backgroundColor: cardBgColor, padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%', transition: 'background-color 0.3s ease' }}>
-          <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Dynamic Web Scraper</h1>
-          <div style={{ marginBottom: '20px' }}>
-            <input
-              type="text"
-              value={dynamicUrl}
-              onChange={(e) => setDynamicUrl(e.target.value)}
-              placeholder="Enter dynamic URL to scrape"
-              style={{
-                width: '100%',
-                padding: '12px 15px',
-                borderRadius: '8px',
-                border: 'none',
-                outline: 'none',
-                fontSize: '1rem',
-                backgroundColor: '#3C3C4F',
-                color: '#fff',
-                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
-              }}
-            />
-          </div>
-          <div style={{ textAlign: 'center' }}>
-            <button
-              onClick={handleDynamicScrape}
-              style={{
-                padding: '12px 30px',
-                borderRadius: '8px',
-                backgroundColor: '#61dafb',
-                color: '#1E1E2F',
-                fontSize: '1rem',
-                fontWeight: 'bold',
-                cursor: 'pointer',
-                border: 'none',
-                transition: 'background-color 0.3s ease, transform 0.3s ease',
-                boxShadow: '0px 4px 12px rgba(97, 218, 251, 0.3)',
-              }}
-              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-            >
-              Scrape Dynamic Site (Not Implemented)
-            </button>
-          </div>
-          <p style={{ marginTop: '20px', textAlign: 'center', color: '#ff6b6b' }}>Dynamic scraping functionality is not yet implemented.</p>
         </div>
       </div>
 

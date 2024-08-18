@@ -4,6 +4,7 @@ export interface ScrapedData {
     description: string;
     links: string[];
     scrapedAt: Date;
+    category?: string;
   }
 
   // Interface to represent data structure of scraped data
