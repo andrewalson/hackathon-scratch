@@ -93,15 +93,22 @@ export default function Home() {
           top: '20px',
           right: '20px',
           padding: '10px',
-          backgroundColor: lightMode ? '#2B2B3C' : '#61dafb',
-          color: lightMode ? '#fff' : '#1E1E2F',
+          backgroundColor: 'transparent',
           border: 'none',
-          borderRadius: '5px',
           cursor: 'pointer',
           zIndex: 20,
         }}
+        aria-label={lightMode ? 'Switch to Dark Mode' : 'Switch to Light Mode'}
       >
-        {lightMode ? 'Light Mode' : 'Dark Mode'}
+        {lightMode ? (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2.25V4.75M12 19.25V21.75M4.75 12H2.25M21.75 12H19.25M18.364 18.364L16.95 16.95M7.05 7.05L5.636 5.636M16.95 7.05L18.364 5.636M5.636 18.364L7.05 16.95M16 12C16 14.2091 14.2091 16 12 16C9.79086 16 8 14.2091 8 12C8 9.79086 9.79086 8 12 8C14.2091 8 16 9.79086 16 12Z" stroke="#1E1E2F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        ) : (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.752 15.002C20.5633 15.4975 19.2879 15.7517 18 15.75C13.4436 15.75 9.75 12.0564 9.75 7.5C9.75 6.21213 10.0042 4.93666 10.4997 3.74805C6.64772 4.85199 3.75 8.42714 3.75 12.75C3.75 17.7206 7.77944 21.75 12.75 21.75C17.0729 21.75 20.648 18.8523 21.752 15.002Z" stroke="#61dafb" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
       </button>
 
       {/* Circles that follow mouse movement */}
