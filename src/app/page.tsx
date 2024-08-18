@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 
 export default function Home() {
-  const [url, setUrl] = useState('');
+  const [staticUrl, setStaticUrl] = useState('');
+  const [dynamicUrl, setDynamicUrl] = useState('');
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,7 @@ export default function Home() {
     };
   }, []);
 
-  const handleScrape = async () => {
+  const handleStaticScrape = async () => {
     setLoading(true);
     setError(null);
     setResult(null);
@@ -40,7 +41,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ url }),
+        body: JSON.stringify({ url: staticUrl }),
       });
 
       if (!response.ok) {
@@ -56,83 +57,159 @@ export default function Home() {
     }
   };
 
+  const handleDynamicScrape = () => {
+    // Placeholder for future dynamic scraping functionality
+    alert('Dynamic scraping functionality not yet implemented');
+  };
+
   return (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#1E1E2F', color: '#fff', fontFamily: '"Courier New", Courier, monospace', position: 'relative', overflow: 'hidden' }}>
+    <div style={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      minHeight: '100vh',
+      backgroundColor: '#1E1E2F',
+      color: '#fff',
+      fontFamily: '"Courier New", Courier, monospace',
+      position: 'relative',
+      overflow: 'hidden',
+      padding: '20px'
+    }}>
       {/* Circles that follow mouse movement */}
       <div className="circle circle1"></div>
       <div className="circle circle2"></div>
       <div className="circle circle3"></div>
 
-      <div style={{ backgroundColor: '#2B2B3C', padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%', zIndex: 10 }}>
-        <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Web Scraper</h1>
-        <div style={{ marginBottom: '20px' }}>
-          <input
-            type="text"
-            value={url}
-            onChange={(e) => setUrl(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && handleScrape()}
-            placeholder="Enter URL to scrape"
-            style={{
-              width: '100%',
-              padding: '12px 15px',
-              borderRadius: '8px',
-              border: 'none',
-              outline: 'none',
-              fontSize: '1rem',
-              backgroundColor: '#3C3C4F',
-              color: '#fff',
-              boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
-            }}
-          />
-        </div>
-        <div style={{ textAlign: 'center' }}>
-          <button
-            onClick={handleScrape}
-            disabled={loading}
-            style={{
-              padding: '12px 30px',
-              borderRadius: '8px',
-              backgroundColor: '#61dafb',
-              color: '#1E1E2F',
-              fontSize: '1rem',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              border: 'none',
-              transition: 'background-color 0.3s ease, transform 0.3s ease',
-              boxShadow: '0px 4px 12px rgba(97, 218, 251, 0.3)',
-            }}
-            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
-          >
-            {loading ? 'Scraping...' : 'Scrape'}
-          </button>
-        </div>
-        {error && <p style={{ color: '#ff6b6b', marginTop: '20px', textAlign: 'center' }}>{error}</p>}
-        {result && (
-          <div style={{ marginTop: '20px' }}>
-            <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#61dafb' }}>{result.title}</h2>
-            {result.paragraphs && result.paragraphs.length > 0 && (
-              <>
-                <h3 style={{ fontSize: '1.2rem', color: '#61dafb' }}>Paragraphs:</h3>
-                <ul style={{ listStyleType: 'disc', paddingLeft: '20px', lineHeight: '1.5' }}>
-                  {result.paragraphs.map((p: string, i: number) => (
-                    <li key={i} style={{ marginBottom: '10px' }}>{p}</li>
-                  ))}
-                </ul>
-              </>
-            )}
-            {result.links && result.links.length > 0 && (
-              <>
-                <h3 style={{ fontSize: '1.2rem', color: '#61dafb' }}>Links:</h3>
-                <ul style={{ listStyleType: 'disc', paddingLeft: '20px', lineHeight: '1.5' }}>
-                  {result.links.map((link: string, i: number) => (
-                    <li key={i} style={{ marginBottom: '10px' }}>{link}</li>
-                  ))}
-                </ul>
-              </>
-            )}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        gap: '20px',
+        zIndex: 10,
+        maxHeight: '90vh',
+        overflowY: 'auto',
+        padding: '20px',
+        boxSizing: 'border-box'
+      }}>
+        {/* Static Scraper */}
+        <div style={{ backgroundColor: '#2B2B3C', padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%' }}>
+          <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Static Web Scraper</h1>
+          <div style={{ marginBottom: '20px' }}>
+            <input
+              type="text"
+              value={staticUrl}
+              onChange={(e) => setStaticUrl(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleStaticScrape()}
+              placeholder="Enter static URL to scrape"
+              style={{
+                width: '100%',
+                padding: '12px 15px',
+                borderRadius: '8px',
+                border: 'none',
+                outline: 'none',
+                fontSize: '1rem',
+                backgroundColor: '#3C3C4F',
+                color: '#fff',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
+              }}
+            />
           </div>
-        )}
+          <div style={{ textAlign: 'center' }}>
+            <button
+              onClick={handleStaticScrape}
+              disabled={loading}
+              style={{
+                padding: '12px 30px',
+                borderRadius: '8px',
+                backgroundColor: '#61dafb',
+                color: '#1E1E2F',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                border: 'none',
+                transition: 'background-color 0.3s ease, transform 0.3s ease',
+                boxShadow: '0px 4px 12px rgba(97, 218, 251, 0.3)',
+              }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              {loading ? 'Scraping...' : 'Scrape Static Site'}
+            </button>
+          </div>
+          {error && <p style={{ color: '#ff6b6b', marginTop: '20px', textAlign: 'center' }}>{error}</p>}
+          {result && (
+            <div style={{ marginTop: '20px' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '10px', color: '#61dafb' }}>{result.title}</h2>
+              {result.paragraphs && result.paragraphs.length > 0 && (
+                <>
+                  <h3 style={{ fontSize: '1.2rem', color: '#61dafb' }}>Paragraphs:</h3>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '20px', lineHeight: '1.5' }}>
+                    {result.paragraphs.map((p: string, i: number) => (
+                      <li key={i} style={{ marginBottom: '10px' }}>{p}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+              {result.links && result.links.length > 0 && (
+                <>
+                  <h3 style={{ fontSize: '1.2rem', color: '#61dafb' }}>Links:</h3>
+                  <ul style={{ listStyleType: 'disc', paddingLeft: '20px', lineHeight: '1.5' }}>
+                    {result.links.map((link: string, i: number) => (
+                      <li key={i} style={{ marginBottom: '10px' }}>{link}</li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Dynamic Scraper */}
+        <div style={{ backgroundColor: '#2B2B3C', padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%' }}>
+          <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Dynamic Web Scraper</h1>
+          <div style={{ marginBottom: '20px' }}>
+            <input
+              type="text"
+              value={dynamicUrl}
+              onChange={(e) => setDynamicUrl(e.target.value)}
+              placeholder="Enter dynamic URL to scrape"
+              style={{
+                width: '100%',
+                padding: '12px 15px',
+                borderRadius: '8px',
+                border: 'none',
+                outline: 'none',
+                fontSize: '1rem',
+                backgroundColor: '#3C3C4F',
+                color: '#fff',
+                boxShadow: 'inset 0 2px 4px rgba(0, 0, 0, 0.2)',
+              }}
+            />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <button
+              onClick={handleDynamicScrape}
+              style={{
+                padding: '12px 30px',
+                borderRadius: '8px',
+                backgroundColor: '#61dafb',
+                color: '#1E1E2F',
+                fontSize: '1rem',
+                fontWeight: 'bold',
+                cursor: 'pointer',
+                border: 'none',
+                transition: 'background-color 0.3s ease, transform 0.3s ease',
+                boxShadow: '0px 4px 12px rgba(97, 218, 251, 0.3)',
+              }}
+              onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+              onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+            >
+              Scrape Dynamic Site (Not Implemented)
+            </button>
+          </div>
+          <p style={{ marginTop: '20px', textAlign: 'center', color: '#ff6b6b' }}>Dynamic scraping functionality is not yet implemented.</p>
+        </div>
       </div>
 
       {/* Add CSS for responsive circles */}
