@@ -8,6 +8,7 @@ export default function Home() {
   const [result, setResult] = useState<any>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -62,19 +63,47 @@ export default function Home() {
     alert('Dynamic scraping functionality not yet implemented');
   };
 
+  const toggleLightMode = () => {
+    setLightMode(!lightMode);
+  };
+
+  const bgColor = lightMode ? '#F0F0F0' : '#1E1E2F';
+  const cardBgColor = lightMode ? '#FFFFFF' : '#2B2B3C';
+  const textColor = lightMode ? '#333333' : '#fff';
+
   return (
     <div style={{
       display: 'flex',
       justifyContent: 'center',
       alignItems: 'center',
       minHeight: '100vh',
-      backgroundColor: '#1E1E2F',
-      color: '#fff',
+      backgroundColor: bgColor,
+      color: textColor,
       fontFamily: '"Courier New", Courier, monospace',
       position: 'relative',
       overflow: 'hidden',
-      padding: '20px'
+      padding: '20px',
+      transition: 'background-color 0.3s ease, color 0.3s ease',
     }}>
+      {/* Light Mode Toggle */}
+      <button
+        onClick={toggleLightMode}
+        style={{
+          position: 'absolute',
+          top: '20px',
+          right: '20px',
+          padding: '10px',
+          backgroundColor: lightMode ? '#2B2B3C' : '#61dafb',
+          color: lightMode ? '#fff' : '#1E1E2F',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          zIndex: 20,
+        }}
+      >
+        {lightMode ? 'Light Mode' : 'Dark Mode'}
+      </button>
+
       {/* Circles that follow mouse movement */}
       <div className="circle circle1"></div>
       <div className="circle circle2"></div>
@@ -93,7 +122,7 @@ export default function Home() {
         boxSizing: 'border-box'
       }}>
         {/* Static Scraper */}
-        <div style={{ backgroundColor: '#2B2B3C', padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%' }}>
+        <div style={{ backgroundColor: cardBgColor, padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%', transition: 'background-color 0.3s ease' }}>
           <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Static Web Scraper</h1>
           <div style={{ marginBottom: '20px' }}>
             <input
@@ -166,7 +195,7 @@ export default function Home() {
         </div>
 
         {/* Dynamic Scraper */}
-        <div style={{ backgroundColor: '#2B2B3C', padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%' }}>
+        <div style={{ backgroundColor: cardBgColor, padding: '40px', borderRadius: '12px', boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)', maxWidth: '500px', width: '100%', transition: 'background-color 0.3s ease' }}>
           <h1 style={{ fontSize: '2rem', marginBottom: '20px', textAlign: 'center', color: '#61dafb', fontFamily: '"Source Code Pro", monospace' }}>Dynamic Web Scraper</h1>
           <div style={{ marginBottom: '20px' }}>
             <input
@@ -212,20 +241,19 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Add CSS for responsive circles */}
       <style jsx>{`
         .circle {
           position: absolute;
           border-radius: 50%;
           pointer-events: none;
-          opacity: 0.2;
-          transition: transform 0.2s ease-out;
+          opacity: ${lightMode ? '0.3' : '0.2'};
+          transition: opacity 0.3s ease, transform 0.2s ease-out, background-color 0.3s ease;
         }
 
         .circle1 {
           width: 150px;
           height: 150px;
-          background: rgba(97, 218, 251, 0.4);
+          background: ${lightMode ? 'rgba(97, 218, 251, 0.6)' : 'rgba(97, 218, 251, 0.4)'};
           top: 10%;
           left: 15%;
         }
@@ -233,7 +261,7 @@ export default function Home() {
         .circle2 {
           width: 200px;
           height: 200px;
-          background: rgba(97, 218, 251, 0.3);
+          background: ${lightMode ? 'rgba(97, 218, 251, 0.5)' : 'rgba(97, 218, 251, 0.3)'};
           top: 50%;
           left: 60%;
         }
@@ -241,7 +269,7 @@ export default function Home() {
         .circle3 {
           width: 100px;
           height: 100px;
-          background: rgba(97, 218, 251, 0.5);
+          background: ${lightMode ? 'rgba(97, 218, 251, 0.7)' : 'rgba(97, 218, 251, 0.5)'};
           top: 80%;
           left: 25%;
         }
@@ -249,7 +277,8 @@ export default function Home() {
         body {
           margin: 0;
           overflow: hidden;
-          background-color: #1E1E2F;
+          background-color: ${bgColor};
+          transition: background-color 0.3s ease;
         }
       `}</style>
     </div>
